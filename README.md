@@ -1,37 +1,80 @@
 # 🩺 Diabetes Outlier Detection & Treatment Lab
 
-An interactive Streamlit lab for detecting and treating outliers in the
-diabetes screening dataset, using both the IQR (Tukey fence) method and the
-Z-score method.
+# Diabetes Outlier Detection Studio
 
-## Features
-- **Single Feature Deep-Dive** — pick one numeric column, see Q1/Q3/IQR,
-  fences, flagged outliers, and a before/after boxplot for any treatment.
-- **Full Dataset Batch Studio** — scan every numeric column at once and run
-  a global treatment across the whole dataset.
-- **Theoretical Research Guide** — the statistics behind the app: IQR vs
-  Z-score, treatment strategies, and a diabetes-specific note on
-  zero-as-missing values (`Glucose`, `BloodPressure`, `SkinThickness`,
-  `Insulin`, `BMI` cannot really be 0 in a living patient).
+An interactive Streamlit application for detecting, visualizing, and treating
+outliers in real-world clinical data, using the Pima Indians Diabetes dataset
+as a case study.
 
-## Project structure
-```
-diabetes-outlier-lab/
-├── app.py                  # Streamlit app (UI + tabs)
-├── stats_engine.py         # StatisticalDetector class (IQR, Z-score, treatments)
+## Overview
+
+Outliers are observations that differ significantly from the rest of a dataset.
+Some outliers are data entry or measurement errors; others represent rare but
+genuine and clinically important cases. This project treats outlier detection
+as an interactive, exploratory process rather than an automatic deletion step.
+
+The app lets a user:
+
+- Select any numeric feature from the dataset (Glucose, BMI, BloodPressure, etc.)
+- Detect outliers using either the IQR method or the Z-Score method
+- View the calculated Q1, Q3, IQR, and fence boundaries
+- Apply a treatment strategy: Keep, Trim, Winsorize, Impute, or Log Transform
+- Compare the distribution before and after treatment with an interactive boxplot
+- Read a short research-notes section covering the statistical background
+
+## Research Question
+
+How can different outlier detection and treatment strategies influence the
+statistical interpretation of real-world data?
+
+This question is explored using the diabetes dataset, where several columns
+(Glucose, BloodPressure, SkinThickness, Insulin, BMI) use 0 to represent a
+missing reading — a physiologically impossible value that the IQR method
+correctly flags as an outlier.
+
+## Detection Methods
+
+**IQR (Interquartile Range)**
+
+IQR = Q3 - Q1
+Lower Fence = Q1 - 1.5 * IQR
+Upper Fence = Q3 + 1.5 * IQR
+Extreme Lower Fence = Q1 - 3 * IQR
+Extreme Upper Fence = Q3 + 3 * IQR
+
+
+**Z-Score**
+Z = (x - mean) / std
+A value is flagged as an outlier when |Z| > 3.
+
+## Treatment Strategies
+
+| Strategy | Description |
+|---|---|
+| Keep | No changes; the value is treated as valid |
+| Trim | Removes rows containing outliers |
+| Winsorize | Caps outlier values at the fence boundary |
+| Impute | Replaces outliers with the column median |
+| Transform | Applies a log(1 + x) transformation to reduce skew |
+
+## Project Structure
+├── app.py # Main Streamlit application
 ├── data/
-│   └── diabetes.csv        # placeholder dataset — replace with your real data
-├── requirements.txt
-├── .streamlit/config.toml  # light teal theme
-└── .gitignore
-```
+│ └── diabetes.csv # Pima Indians Diabetes dataset
+├── .streamlit/
+│ └── config.toml # App theme configuration
+└── README.md
 
 ## Dataset
-`data/diabetes.csv` is the Pima Indians Diabetes dataset (768 rows, 9
-columns: `Pregnancies`, `Glucose`, `BloodPressure`, `SkinThickness`,
-`Insulin`, `BMI`, `DiabetesPedigreeFunction`, `Age`, `Outcome`), sourced from
-[plotly/datasets](https://raw.githubusercontent.com/plotly/datasets/master/diabetes.csv).
-To use a different dataset, drop your own CSV in `data/` (or use the
-in-app "Upload Custom Dataset" uploader) and update `ZERO_AS_MISSING_COLS`
-in `app.py` if your column names differ.
 
+Pima Indians Diabetes Dataset — 768 patient records, 8 numeric clinical
+features (Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI,
+DiabetesPedigreeFunction, Age).
+
+## References
+
+- Tukey, J. W. (1977). *Exploratory Data Analysis*. Addison-Wesley.
+- Barnett, V., & Lewis, T. (1994). *Outliers in Statistical Data* (3rd ed.). Wiley.
+- Hodge, V. J., & Austin, J. (2004). A Survey of Outlier Detection Methodologies.
+  *Artificial Intelligence Review*, 22(2), 85–126.
+  
